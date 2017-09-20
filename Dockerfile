@@ -13,4 +13,6 @@ RUN wget $(curl -Ls https://releases.hashicorp.com/index.json | jq '{terraform}'
 RUN unzip /tmp/terraform.zip -d /usr/local/bin
 RUN rm -Rf /tmp/terraform.zip
 
+RUN terraform version
+
 RUN apk del git make go gcc libc-dev jq curl
