@@ -15,4 +15,4 @@ RUN rm -Rf /tmp/terraform.zip
 
 RUN terraform version
 
-RUN apk del git make go gcc libc-dev jq curl coreutils
+RUN apk del make go gcc libc-dev jq curl coreutils
