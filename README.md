@@ -3,6 +3,7 @@
 * Amazon ECR Docker Credential Helper
 * HashiCorp Terraform
 * AWS CLI
+* Docker Compose
 
 ### Docker-in-Docker
 
@@ -25,3 +26,7 @@ Terraform is a tool for building, changing, and versioning infrastructure safely
 ### 3. AWS Command Line Interface
 
 The AWS Command Line Interface (CLI) is a unified tool to manage your AWS services. Please visit https://aws.amazon.com/cli/?nc1=h_ls for more information.
+
+### 4. Docker Compose
+
+Compose is a tool for defining and running multi-container Docker applications. Please visit https://docs.docker.com/compose/ for more information.
