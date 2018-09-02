@@ -1,22 +1,38 @@
+FROM docker:stable-dind as ecr-login
+RUN set -exo pipefail \
+    && apk add --no-cache \
+        go \
+        git \
+        make \
+        musl-dev \
+    && go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login
+
+
+FROM docker:stable-dind as terraform
+RUN set -exo pipefail \
+    && apk add --no-cache \
+        curl \
+        jq \
+    && TERRAFORM_VERSION=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq --raw-output '.current_version') \
+    && wget --output-document=/tmp/terraform.zip \
+        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
+    && unzip /tmp/terraform.zip -d /usr/local/bin
+
+
 FROM docker:stable-dind
-
 COPY config.json /root/.docker/config.json
-
-RUN apk add --update --no-cache ca-certificates openssl git make go gcc libc-dev jq curl coreutils python3 \
-    && update-ca-certificates \
-    && go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login \
-    && mv /root/go/bin/docker-credential-ecr-login /usr/local/bin/docker-credential-ecr-login \
-    && mkdir -p /root/.docker \
-    && wget $(curl -Ls https://releases.hashicorp.com/index.json | jq '{terraform}' | grep url | egrep linux_amd64 | sort -V | tail -n1 | awk '{print $2}' | sed 's/"*,*//g') -O /tmp/terraform.zip \
-    && unzip /tmp/terraform.zip -d /usr/local/bin \
-    && curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
-    && python3 get-pip.py \
-    && pip install awscli \
-    && pip3 install docker-compose \
-    && apk del make go gcc libc-dev jq curl coreutils \
+COPY --from=ecr-login /root/go/bin/docker-credential-ecr-login /usr/local/bin/docker-credential-ecr-login
+COPY --from=terraform /usr/local/bin/terraform /usr/local/bin/terraform
+RUN set -exo pipefail \
+    && apk add --no-cache \
+        openssh-client \
+        openssl \
+        python3 \
+    && wget --output-document=/tmp/awscli-bundle.zip \
+        "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" \
+    && unzip /tmp/awscli-bundle.zip -d /tmp \
+    && /usr/bin/python3 /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
+    && rm -rf /tmp/awscli-bundle* \
     && rm -rf /var/cache/apk/* \
-    && rm -Rf /root/go \
-    && rm -Rf /tmp/terraform.zip \
     && aws --version \
-    && terraform version \
-    && docker-compose --version
+    && terraform version
