@@ -1,8 +1,9 @@
 FROM docker:stable-dind as ecr-login
 RUN set -exo pipefail \
     && apk add --no-cache \
-        go \
+        gettext \
         git \
+        go \
         make \
         musl-dev \
     && go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login
@@ -22,9 +23,11 @@ RUN set -exo pipefail \
 FROM docker:stable-dind
 COPY config.json /root/.docker/config.json
 COPY --from=ecr-login /root/go/bin/docker-credential-ecr-login /usr/local/bin/docker-credential-ecr-login
+COPY --from=ecr-login /usr/bin/envsubst /usr/local/bin/envsubst
 COPY --from=terraform /usr/local/bin/terraform /usr/local/bin/terraform
 RUN set -exo pipefail \
     && apk add --no-cache \
+        libintl \
         openssh-client \
         openssl \
         python3 \
