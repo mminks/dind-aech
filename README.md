@@ -25,3 +25,13 @@ Terraform is a tool for building, changing, and versioning infrastructure safely
 ### 3. AWS Command Line Interface
 
 The AWS Command Line Interface (CLI) is a unified tool to manage your AWS services. Please visit https://aws.amazon.com/cli/?nc1=h_ls for more information.
+
+### Usage
+
+Add something like the following to your .gitlab-ci.yml
+```
+  before_script:
+    - eval $(ssh-agent) && setup_ssh.sh s3-bucket/path/to/your/private_ssh_key
+  script:
+    - deploy_to_swarm.sh "app-name" "ec2-user@swarm.example.com"
+```
