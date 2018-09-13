@@ -3,7 +3,8 @@
 set -eo pipefail
 
 APP=${1?"Missing app name"}
-SERVER=${2?"Missing deploy server user@host"}
+SERVER=${2?"Missing target deploy server 'user@host'"}
+ENV_PATH=${3}
 
 STACK_FILE="swarm/${APP}.yml"
 
@@ -18,6 +19,8 @@ cat "${STACK_FILE}" | envsubst | ssh "${SERVER}" "cat > ${APP}.yml"
 ssh "${SERVER}" /bin/bash <<EOF
 
     set -eo pipefail
+
+    [[ -n "${ENV_PATH}" ]] && eval \$(AWS_REGION=${AWS_DEFAULT_REGION} AWS_ENV_PATH=${ENV_PATH} /usr/local/bin/aws-env)
 
     docker stack deploy --prune --with-registry-auth --compose-file ${APP}.yml ${APP}
 
