@@ -33,5 +33,5 @@ Add something like the following to your .gitlab-ci.yml
   before_script:
     - eval $(ssh-agent) && setup_ssh.sh s3-bucket/path/to/your/private_ssh_key
   script:
-    - deploy_to_swarm.sh "app-name" "ec2-user@swarm.example.com"
+    - deploy_to_swarm.sh "app-name" "ec2-user@swarm.example.com" [ssm/path/to/your/credentials]
 ```
