@@ -20,10 +20,16 @@ ssh "${SERVER}" /bin/bash <<EOF
 
     set -eo pipefail
 
+    # get secrets from SSM if we are suppose to
     [[ -n "${ENV_PATH}" ]] && eval \$(AWS_REGION=${AWS_DEFAULT_REGION} AWS_ENV_PATH=${ENV_PATH} /usr/local/bin/aws-env)
 
+    # load cluster_name into environment if it exists
+    [[ -r "/etc/cluster_name" ]] && export CLUSTER_NAME=$(cat /etc/cluster_name)
+
+    # deploy the stack to swarm
     docker stack deploy --prune --with-registry-auth --compose-file ${APP}.yml ${APP}
 
+    # check for succesfull deployment
     SECONDS=0
     STATE="UNKNOWN"
     until [ "\${STATE}" == "Running" ]; do
