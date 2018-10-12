@@ -32,6 +32,8 @@ RUN set -exo pipefail \
         openssh-client \
         openssl \
         python3 \
+        coreutils \
+        bind-tools \
     # Setup ecr-login
     && mkdir -p /root/.docker \
     && echo "{ \"credsStore\": \"ecr-login\" }" > /root/.docker/config.json \
