@@ -28,12 +28,12 @@ COPY --from=ecr-login /usr/bin/envsubst /usr/local/bin/envsubst
 COPY --from=terraform /usr/local/bin/terraform /usr/local/bin/terraform
 RUN set -exo pipefail \
     && apk add --no-cache \
+        coreutils \
+        bind-tools \
         libintl \
         openssh-client \
         openssl \
         python3 \
-        coreutils \
-        bind-tools \
     # Setup ecr-login
     && mkdir -p /root/.docker \
     && echo "{ \"credsStore\": \"ecr-login\" }" > /root/.docker/config.json \
