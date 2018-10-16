@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -exo pipefail
+set -eo pipefail
 
 APP=${1?"Missing app name. Usage: deploy_to_swarm.sh '<app_name>' '<user@host>' '[/path/to/aws/ssm]'"}
 TARGET=${2?"Missing deploy server. Usage: deploy_to_swarm.sh '<app_name>' '<user@host>' '[/path/to/aws/ssm]'"}
