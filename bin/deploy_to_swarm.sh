@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
-set -eo pipefail
+set -exo pipefail
 
-APP=${1?"Missing app name"}
-SERVER=${2?"Missing target deploy server 'user@host'"}
+APP=${1?"Missing app name. Usage: deploy_to_swarm.sh '<app_name>' '<user@host>' '[/path/to/aws/ssm]'"}
+TARGET=${2?"Missing deploy server. Usage: deploy_to_swarm.sh '<app_name>' '<user@host>' '[/path/to/aws/ssm]'"}
 ENV_PATH=${3}
 
 STACK_FILE="swarm/${APP}.yml"
@@ -13,10 +13,23 @@ if [ ! -f "${STACK_FILE}" ]; then
     exit 1
 fi
 
-# Copy swarm file to target server and replace all variables
-cat "${STACK_FILE}" | envsubst | ssh "${SERVER}" "cat > ${APP}.yml"
+USER="$(echo $TARGET | cut -d@ -f1)"
+HOST="$(echo $TARGET | cut -d@ -f2)"
 
-ssh "${SERVER}" /bin/bash <<EOF
+if [ -z "${USER}" ] || [ -z "${HOST}" ] || [ "${USER}" == "${HOST}" ]; then
+    echo "Deploy server needs to be user@host" >&2
+    exit 1
+fi
+
+# ${HOST} might be dns load balanced. To make sure we always get the same machine
+# we resolve the ip once and use the ip from now on
+IP="$(dig ${HOST} A +short | head --lines=1)"
+
+# Copy swarm file to target server and replace all variables
+ssh "${USER}@${IP}" "mkdir --parents ~/deployments"
+cat "${STACK_FILE}" | envsubst | ssh "${USER}@${IP}" "cat > deployments/${APP}.yml"
+
+ssh "${USER}@${IP}" /bin/bash <<EOF
 
     set -eo pipefail
 
@@ -27,7 +40,7 @@ ssh "${SERVER}" /bin/bash <<EOF
     [[ -r "/etc/cluster_name" ]] && export CLUSTER_NAME=\$(cat /etc/cluster_name)
 
     # deploy the stack to swarm
-    docker stack deploy --prune --with-registry-auth --compose-file ${APP}.yml ${APP}
+    docker stack deploy --prune --with-registry-auth --compose-file deployments/${APP}.yml ${APP}
 
     # check for succesfull deployment
     SECONDS=0
