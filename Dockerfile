@@ -30,6 +30,7 @@ RUN set -exo pipefail \
     && apk add --no-cache \
         coreutils \
         bind-tools \
+        jq \
         libintl \
         openssh-client \
         openssl \
