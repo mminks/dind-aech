@@ -39,10 +39,10 @@ RUN set -exo pipefail \
         openssl \
         python3 \
         py-pip \
-    # Setup ecr-login
+    # setup ecr-login
     && mkdir -p /root/.docker \
     && echo "{ \"credsStore\": \"ecr-login\" }" > /root/.docker/config.json \
-    # Install awscli
+    # install awscli
     && wget --output-document=/tmp/awscli-bundle.zip \
         "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" \
     && unzip /tmp/awscli-bundle.zip -d /tmp \
@@ -54,6 +54,6 @@ RUN set -exo pipefail \
     # cleanup
     && rm -rf /tmp/awscli-bundle* \
     && rm -rf /var/cache/apk/* \
-    # show versions
+    # show versions of installed packages
     && aws --version \
     && terraform version \
