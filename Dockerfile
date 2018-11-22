@@ -51,9 +51,15 @@ RUN set -exo pipefail \
     && pip install --upgrade pip \
     # install docker-compose
     && pip install docker-compose \
+    # install kubectl
+    && wget --output-document=/usr/local/bin/kubectl \
+            https://storage.googleapis.com/kubernetes-release/release/$(wget --quiet --output-document=- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
+    && chmod +x /usr/local/bin/kubectl \
+    && mkdir -p ~/.kube \
     # cleanup
     && rm -rf /tmp/awscli-bundle* \
     && rm -rf /var/cache/apk/* \
     # show versions of installed packages
     && aws --version \
     && terraform version \
+    && kubectl version --client=true --short=true
