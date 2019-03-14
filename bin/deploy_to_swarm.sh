@@ -8,15 +8,15 @@ ENV_PATH=${3}
 
 STACK_FILE="swarm/${APP}.yml"
 
-if [ ! -f "${STACK_FILE}" ]; then
-    echo "${STACK_FILE} not found" >&2
+if [ ! -r "${STACK_FILE}" ]; then
+    echo "${STACK_FILE} not found or readable!" >&2
     exit 1
 fi
 
-USER="$(echo $TARGET | cut -d@ -f1)"
-HOST="$(echo $TARGET | cut -d@ -f2)"
+USER="$(echo ${TARGET} | cut -d@ -f1)"
+HOST="$(echo ${TARGET} | cut -d@ -f2)"
 
-if [ -z "${USER}" ] || [ -z "${HOST}" ] || [ "${USER}" == "${HOST}" ]; then
+if [ -z "${USER}" ] || [ -z "${HOST}" ] || [ "${USER}" = "${HOST}" ]; then
     echo "Deploy server needs to be user@host" >&2
     exit 1
 fi
