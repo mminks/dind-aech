@@ -25,10 +25,14 @@ fi
 # we resolve the ip once and use the ip from now on
 IP="$(dig ${HOST} A +short | head --lines=1)"
 
-# Copy swarm file to target server and replace all variables
-ssh "${USER}@${IP}" "mkdir --parents ~/deployments"
-cat "${STACK_FILE}" | envsubst | ssh "${USER}@${IP}" "cat > deployments/${APP}.yml"
+# Create directory on target machine
+DEPLOY_FILE="deployments/$(basename ${STACK_FILE})"
+ssh "${USER}@${IP}" "mkdir --parents $(dirname ${DEPLOY_FILE})"
 
+# Copy swarm file to target server and replace all variables
+cat "${STACK_FILE}" | envsubst | ssh "${USER}@${IP}" "cat > ${DEPLOY_FILE}"
+
+# Start the deployment
 ssh "${USER}@${IP}" /bin/bash <<EOF
 
     set -eo pipefail
@@ -40,7 +44,7 @@ ssh "${USER}@${IP}" /bin/bash <<EOF
     [[ -r "/etc/cluster_name" ]] && export CLUSTER_NAME=\$(cat /etc/cluster_name)
 
     # deploy the stack to swarm
-    docker stack deploy --prune --with-registry-auth --compose-file deployments/${APP}.yml ${APP}
+    docker stack deploy --prune --with-registry-auth --compose-file ${DEPLOY_FILE} ${APP}
 
     # check for succesfull deployment
     SECONDS=0
