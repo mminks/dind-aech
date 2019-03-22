@@ -11,6 +11,14 @@ if [ ! -r "${COMPOSE_FILE}" ]; then
     exit 1
 fi
 
+BASE_NAME=$(basename ${COMPOSE_FILE})
+PROJECT_NAME=${BASE_NAME%.*}
+
+if [ "${PROJECT_NAME}" = "docker-compose" ]; then
+    echo "${COMPOSE_FILE} cannot be docker-compose.yml! The filename will be used to namespace the service names!" >&2
+    exit 1
+fi
+
 USER="$(echo ${TARGET} | cut -d@ -f1)"
 HOST="$(echo ${TARGET} | cut -d@ -f2)"
 
@@ -39,6 +47,6 @@ ssh "${USER}@${IP}" /bin/bash <<EOF
     [[ -n "${ENV_PATH}" ]] && eval \$(AWS_REGION=${AWS_DEFAULT_REGION} AWS_ENV_PATH=${ENV_PATH} /usr/local/bin/aws-env)
 
     # deploy the stack
-    docker-compose --file ${DEPLOY_FILE} up --detach --no-color
+    docker-compose --file ${DEPLOY_FILE} --project-name ${PROJECT_NAME} up --detach --no-color
 
 EOF
