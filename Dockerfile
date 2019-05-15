@@ -38,22 +38,28 @@ RUN set -exo pipefail \
         openssh-client \
         openssl \
         python3 \
+        python3-dev  \
         py-pip \
+        musl-dev \
+        gcc \
+        make \
+        libffi-dev \
+        openssl-dev \
     # setup ecr-login
     && mkdir -p /root/.docker \
     && echo "{ \"credsStore\": \"ecr-login\" }" > /root/.docker/config.json \
     # install awscli
     && wget --output-document=/tmp/awscli-bundle.zip \
-        "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" \
+         "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" \
     && unzip /tmp/awscli-bundle.zip -d /tmp \
     && /usr/bin/python3 /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
     # upgrade pip
-    && pip install --upgrade pip \
+    && pip3 install --upgrade pip \
     # install docker-compose
-    && pip install docker-compose \
+    && pip3 install docker-compose \
     # install kubectl
     && wget --output-document=/usr/local/bin/kubectl \
-            https://storage.googleapis.com/kubernetes-release/release/$(wget --quiet --output-document=- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
+         https://storage.googleapis.com/kubernetes-release/release/$(wget --quiet --output-document=- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
     && chmod +x /usr/local/bin/kubectl \
     && mkdir -p ~/.kube \
     # cleanup
