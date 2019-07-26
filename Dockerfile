@@ -46,6 +46,9 @@ RUN set -exo pipefail \
         make \
         libffi-dev \
         openssl-dev \
+    # setup ssh
+    && mkdir ~/.ssh \
+    && echo "Host *\n\tStrictHostKeyChecking accept-new" > ~/.ssh/config \
     # setup ecr-login
     && mkdir -p /root/.docker \
     && echo "{ \"credsStore\": \"ecr-login\" }" > /root/.docker/config.json \
