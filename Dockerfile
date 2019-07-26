@@ -28,6 +28,7 @@ COPY bin/* /usr/local/bin/
 COPY --from=ecr-login /root/go/bin/docker-credential-ecr-login /usr/local/bin/docker-credential-ecr-login
 COPY --from=ecr-login /usr/bin/envsubst /usr/local/bin/envsubst
 COPY --from=terraform /usr/local/bin/terraform /usr/local/bin/terraform
+COPY ssh/config /root/.ssh/
 
 RUN set -exo pipefail \
     && apk add --no-cache \
@@ -46,9 +47,6 @@ RUN set -exo pipefail \
         make \
         libffi-dev \
         openssl-dev \
-    # setup ssh
-    && mkdir ~/.ssh \
-    && echo -e "Host *\n\tStrictHostKeyChecking accept-new" > ~/.ssh/config \
     # setup ecr-login
     && mkdir -p /root/.docker \
     && echo "{ \"credsStore\": \"ecr-login\" }" > /root/.docker/config.json \
