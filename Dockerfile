@@ -48,7 +48,7 @@ RUN set -exo pipefail \
         openssl-dev \
     # setup ssh
     && mkdir ~/.ssh \
-    && echo "Host *\n\tStrictHostKeyChecking accept-new" > ~/.ssh/config \
+    && echo -e "Host *\n\tStrictHostKeyChecking accept-new" > ~/.ssh/config \
     # setup ecr-login
     && mkdir -p /root/.docker \
     && echo "{ \"credsStore\": \"ecr-login\" }" > /root/.docker/config.json \
