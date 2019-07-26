@@ -15,7 +15,7 @@ RUN set -exo pipefail \
     && apk add --no-cache \
         curl \
         jq \
-    && TERRAFORM_VERSION=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq --raw-output '.current_version') \
+    && TERRAFORM_VERSION=0.11.14 \
     && wget --output-document=/tmp/terraform.zip \
         "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
     && unzip /tmp/terraform.zip -d /usr/local/bin
@@ -33,6 +33,7 @@ RUN set -exo pipefail \
     && apk add --no-cache \
         bind-tools \
         coreutils \
+        git \
         jq \
         libintl \
         openssh-client \
