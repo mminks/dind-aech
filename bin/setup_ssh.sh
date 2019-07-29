@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -eo pipefail
+set -e
 
 AWS_KEYFILE=${1?"Missing AWS s3 path to private key"}
 
