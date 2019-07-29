@@ -15,10 +15,17 @@ RUN set -exo pipefail \
     && apk add --no-cache \
         curl \
         jq \
-    && TERRAFORM_VERSION=0.11.14 \
-    && wget --output-document=/tmp/terraform.zip \
-        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
-    && unzip /tmp/terraform.zip -d /usr/local/bin
+    && TERRAFORM_VERSION_old=0.11.14 \
+    && TERRAFORM_VERSION_new=0.12.5 \
+    && wget --output-document=/tmp/terraform_${TERRAFORM_VERSION_old}.zip \
+        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION_old}/terraform_${TERRAFORM_VERSION_old}_linux_amd64.zip" \
+    && wget --output-document=/tmp/terraform_${TERRAFORM_VERSION_new}.zip \
+        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION_new}/terraform_${TERRAFORM_VERSION_new}_linux_amd64.zip" \
+    && mkdir /opt/terraform_${TERRAFORM_VERSION_old} \
+    && mkdir /opt/terraform_${TERRAFORM_VERSION_new} \
+    && unzip /tmp/terraform_${TERRAFORM_VERSION_old}.zip -d /opt/terraform_${TERRAFORM_VERSION_old} \
+    && unzip /tmp/terraform_${TERRAFORM_VERSION_new}.zip -d /opt/terraform_${TERRAFORM_VERSION_new} \
+    && ln -s /opt/terraform_${TERRAFORM_VERSION_old}/terraform /usr/local/bin/
 
 FROM docker:stable-dind
 
