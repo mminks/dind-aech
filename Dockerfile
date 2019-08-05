@@ -24,18 +24,19 @@ RUN set -exo pipefail \
     && mkdir /opt/terraform_${TERRAFORM_VERSION_old} \
     && mkdir /opt/terraform_${TERRAFORM_VERSION_new} \
     && unzip /tmp/terraform_${TERRAFORM_VERSION_old}.zip -d /opt/terraform_${TERRAFORM_VERSION_old} \
-    && unzip /tmp/terraform_${TERRAFORM_VERSION_new}.zip -d /opt/terraform_${TERRAFORM_VERSION_new} \
-    && ln -s /opt/terraform_${TERRAFORM_VERSION_old}/terraform /usr/local/bin/
+    && unzip /tmp/terraform_${TERRAFORM_VERSION_new}.zip -d /opt/terraform_${TERRAFORM_VERSION_new}
 
 FROM docker:stable-dind
 
 WORKDIR /root
+ENV PATH /opt/terraform_0.11.14:${PATH}
 
 COPY bin/* /usr/local/bin/
+COPY ssh/config /root/.ssh/
+
 COPY --from=ecr-login /root/go/bin/docker-credential-ecr-login /usr/local/bin/docker-credential-ecr-login
 COPY --from=ecr-login /usr/bin/envsubst /usr/local/bin/envsubst
-COPY --from=terraform /usr/local/bin/terraform /usr/local/bin/terraform
-COPY ssh/config /root/.ssh/
+COPY --from=terraform /opt /opt
 
 RUN set -exo pipefail \
     && apk add --no-cache \
