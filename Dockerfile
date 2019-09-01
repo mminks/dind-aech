@@ -15,28 +15,47 @@ RUN set -exo pipefail \
     && apk add --no-cache \
         curl \
         jq \
-    && TERRAFORM_VERSION_old=0.11.14 \
-    && TERRAFORM_VERSION_new=0.12.5 \
-    && wget --output-document=/tmp/terraform_${TERRAFORM_VERSION_old}.zip \
-        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION_old}/terraform_${TERRAFORM_VERSION_old}_linux_amd64.zip" \
-    && wget --output-document=/tmp/terraform_${TERRAFORM_VERSION_new}.zip \
-        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION_new}/terraform_${TERRAFORM_VERSION_new}_linux_amd64.zip" \
-    && mkdir /opt/terraform_${TERRAFORM_VERSION_old} \
-    && mkdir /opt/terraform_${TERRAFORM_VERSION_new} \
-    && unzip /tmp/terraform_${TERRAFORM_VERSION_old}.zip -d /opt/terraform_${TERRAFORM_VERSION_old} \
-    && unzip /tmp/terraform_${TERRAFORM_VERSION_new}.zip -d /opt/terraform_${TERRAFORM_VERSION_new}
+    && TERRAFORM_LEGACY_URL=$(curl -Ls https://releases.hashicorp.com/terraform/index.json \
+                        | jq '.' \
+                        | awk '{print $2}' \
+                        | grep -v alpha \
+                        | grep -v beta \
+                        | grep https \
+                        | grep linux \
+                        | grep amd64 \
+                        | grep -E "0\.11\.[0-9]+\/" \
+                        | tr -d '"' \
+                        | sort -V \
+                        | tail -n1) \
+    && TERRAFORM_URL=$(curl -Ls https://releases.hashicorp.com/terraform/index.json \
+                        | jq '.' \
+                        | awk '{print $2}' \
+                        | grep -v alpha \
+                        | grep -v beta \
+                        | grep https \
+                        | grep linux \
+                        | grep amd64 \
+                        | tr -d '"' \
+                        | sort -V \
+                        | tail -n1) \
+    && wget --output-document=/tmp/terraform_legacy.zip ${TERRAFORM_LEGACY_URL} \
+    && wget --output-document=/tmp/terraform.zip ${TERRAFORM_URL} \
+    && unzip /tmp/terraform_legacy.zip -d /tmp \
+    && mv /tmp/terraform /usr/local/bin/terraform0.11 \
+    && unzip /tmp/terraform.zip -d /tmp \
+    && mv /tmp/terraform /usr/local/bin/terraform
 
 FROM docker:stable-dind
 
 WORKDIR /root
-ENV PATH /opt/terraform_0.11.14:${PATH}
 
 COPY bin/* /usr/local/bin/
 COPY ssh/config /root/.ssh/
 
 COPY --from=ecr-login /root/go/bin/docker-credential-ecr-login /usr/local/bin/docker-credential-ecr-login
 COPY --from=ecr-login /usr/bin/envsubst /usr/local/bin/envsubst
-COPY --from=terraform /opt /opt
+COPY --from=terraform /usr/local/bin/terraform0.11 /usr/local/bin/terraform0.11
+COPY --from=terraform /usr/local/bin/terraform /usr/local/bin/terraform
 
 RUN set -exo pipefail \
     && apk add --no-cache \
