@@ -1,4 +1,4 @@
-# Docker-in-Docker with some helpful tools for Gitlab-CI builds
+# Docker-in-Docker with some helpful tools for GitLab CI/CD builds
 
 * Amazon ECR Docker Credential Helper
 * HashiCorp Terraform
@@ -33,7 +33,7 @@ The AWS Command Line Interface (CLI) is a unified tool to manage your AWS servic
 
 The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters. You can use kubectl to deploy applications, inspect and manage cluster resources, and view logs.
 
-### 5. Usage in Gitlab CI Pipelines
+### 5. Usage in GitLab CI/CD Pipelines
 
 Add something like the following to your `.gitlab-ci.yml`:
 
