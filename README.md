@@ -2,7 +2,8 @@
 
 * Amazon ECR Docker Credential Helper
 * HashiCorp Terraform
-* AWS CLI
+* AWS CLI (Command Line Interface)
+* kubectl - The Kubernetes command-line tool
 
 ### Docker-in-Docker
 
@@ -22,16 +23,37 @@ If you want to know how the Credential Helper works and what else it needed to u
 
 Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage existing and popular service providers as well as custom in-house solutions. Please visit https://www.terraform.io/ for more information.
 
+We will always build the latest version of Terraform. The latest 0.11.x binary is available under `/usr/local/bin/terraform0.11`. 
+
 ### 3. AWS Command Line Interface
 
 The AWS Command Line Interface (CLI) is a unified tool to manage your AWS services. Please visit https://aws.amazon.com/cli/?nc1=h_ls for more information.
 
-### Usage
+### 4. kubectl - The Kubernetes command-line tool
 
-Add something like the following to your .gitlab-ci.yml
+The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters. You can use kubectl to deploy applications, inspect and manage cluster resources, and view logs.
+
+### 5. Usage in Gitlab CI Pipelines
+
+Add something like the following to your `.gitlab-ci.yml`:
+
+#### 5.1 Deploy to Docker Compose
+
+```
+TODO
+```
+
+#### 5.2 Deploy to Docker Swarm
+
 ```
   before_script:
     - eval $(ssh-agent) && setup_ssh.sh s3-bucket/path/to/your/private_ssh_key
   script:
     - deploy_to_swarm.sh "app-name" "ec2-user@swarm.example.com" [ssm/path/to/your/credentials]
+```
+
+#### 5.3 Deploy to Kubernetes (K8s)
+
+```
+TODO
 ```
