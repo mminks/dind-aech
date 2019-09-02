@@ -55,5 +55,10 @@ TODO
 #### 5.3 Deploy to Kubernetes (K8s)
 
 ```
-TODO
+  before_script:
+    - aws s3 cp s3://path-to-your-k8s/config ~/.kube
+  script:
+    - deploy_to_kubernetes.sh k8s
 ```
+
+The "k8s" in `deploy_to_kubernetes.sh k8s` is either a file or directory to your K8s manifests.

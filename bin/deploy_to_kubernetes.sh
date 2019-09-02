@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-MANIFEST=${1?"Please specify the manifest files or directory you want to dpeloy to kubernetes"}
+MANIFEST=${1?"Please specify the manifest files or directory you want to deploy to kubernetes"}
 DEPLOYMENT_NAME=${2}
 
 if [ -d "${MANIFEST}" ]; then
