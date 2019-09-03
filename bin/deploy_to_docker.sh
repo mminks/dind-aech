@@ -15,7 +15,8 @@ BASE_NAME=$(basename ${COMPOSE_FILE})
 PROJECT_NAME=${BASE_NAME%.*}
 
 if [ "${PROJECT_NAME}" = "docker-compose" ]; then
-    echo "${COMPOSE_FILE} cannot be docker-compose.yml! The filename will be used to namespace the service names!" >&2
+    echo "${COMPOSE_FILE}
+    " >&2
     exit 1
 fi
 
