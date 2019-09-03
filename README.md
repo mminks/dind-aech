@@ -41,12 +41,14 @@ Add something like the following to your `.gitlab-ci.yml`:
 
 ```
   before_script:
-   - eval $(ssh-agent) && setup_ssh.sh <name of your s3 bucket w/o 's3://'>/path/id_rsa
+   - eval $(ssh-agent) && setup_ssh.sh s3-bucket/path/to/your/private_ssh_key
   script:
     - deploy_to_docker.sh "deploy/app.yml" "user@host"
 ```
 
 The Docker compose file cannot be named `docker-compose.yml`because the filename will be used to namespace the service names.
+
+Specify your S3 bucket without 's3://'.
 
 #### 5.2 Deploy to Docker Swarm
 
@@ -56,6 +58,8 @@ The Docker compose file cannot be named `docker-compose.yml`because the filename
   script:
     - deploy_to_swarm.sh "app-name" "user@swarm.host" [ssm/path/to/your/credentials]
 ```
+
+Specify your S3 bucket without 's3://'.
 
 #### 5.3 Deploy to Kubernetes (K8s)
 
