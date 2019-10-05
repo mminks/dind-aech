@@ -67,6 +67,7 @@ RUN set -exo pipefail \
         openssh-client \
         openssl \
         python3 \
+        curl \
         python3-dev  \
         py-pip \
         musl-dev \
