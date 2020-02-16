@@ -45,6 +45,19 @@ RUN set -exo pipefail \
     && unzip /tmp/terraform.zip -d /tmp \
     && mv /tmp/terraform /usr/local/bin/terraform
 
+FROM alpine:latest as cli53
+
+ENV GOPATH /go
+ENV GO15VENDOREXPERIMENT 1
+
+RUN apk add --no-cache \
+      git \
+      go \
+      make;\
+    go get github.com/barnybug/cli53; \
+    cd $GOPATH/src/github.com/barnybug/cli53; \
+    make install;
+
 FROM docker:stable-dind
 
 WORKDIR /root
@@ -56,6 +69,7 @@ COPY --from=ecr-login /root/go/bin/docker-credential-ecr-login /usr/local/bin/do
 COPY --from=ecr-login /usr/bin/envsubst /usr/local/bin/envsubst
 COPY --from=terraform /usr/local/bin/terraform0.11 /usr/local/bin/terraform0.11
 COPY --from=terraform /usr/local/bin/terraform /usr/local/bin/terraform
+COPY --from=cli53 /go/bin/cli53 /usr/local/bin/cli53
 
 RUN set -exo pipefail \
     && apk add --no-cache \
@@ -96,6 +110,7 @@ RUN set -exo pipefail \
     && rm -rf /tmp/awscli-bundle* \
     && rm -rf /var/cache/apk/* \
     # show versions of installed packages
-    && aws --version \
-    && terraform version \
-    && kubectl version --client=true --short=true
+    && echo "awscli: $(aws --version)" \
+    && echo "terraform: $(terraform version)" \
+    && echo "kubectl: $(kubectl version --client=true --short=true)" \
+    && echo "cli53: $(cli53 -v)"

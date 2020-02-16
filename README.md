@@ -4,12 +4,15 @@
 * HashiCorp Terraform
 * AWS CLI (Command Line Interface)
 * kubectl - The Kubernetes command-line tool
+* cli53 - Command line tool for Amazon Route 53
 
 ### Docker-in-Docker
 
 I'm using the official Docker repository. Please visit https://github.com/docker-library/docker for more information.
 
-### 1. Amazon ECR Docker Credential Helper
+### Tools
+
+#### 1. Amazon ECR Docker Credential Helper
 
 The Amazon ECR Docker Credential Helper is a credential helper for the Docker daemon that makes it easier to use Amazon EC2 Container Registry (ECR).
 
@@ -19,25 +22,31 @@ If you want to know how the Credential Helper works and what else it needed to u
 
 ***Remember to set the AWS environment variables.***
 
-### 2. HashiCorp Terraform
+#### 2. HashiCorp Terraform
 
 Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage existing and popular service providers as well as custom in-house solutions. Please visit https://www.terraform.io/ for more information.
 
-We will always build the latest version of Terraform. The latest 0.11.x binary is available under `/usr/local/bin/terraform0.11`. 
+We will always build the latest version of Terraform.
 
-### 3. AWS Command Line Interface
+The latest 0.11.x binary is available under `/usr/local/bin/terraform0.11`.
+
+#### 3. AWS Command Line Interface
 
 The AWS Command Line Interface (CLI) is a unified tool to manage your AWS services. Please visit https://aws.amazon.com/cli/?nc1=h_ls for more information.
 
-### 4. kubectl - The Kubernetes command-line tool
+#### 4. kubectl - The Kubernetes command-line tool
 
 The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters. You can use kubectl to deploy applications, inspect and manage cluster resources, and view logs.
 
-### 5. Usage in GitLab CI/CD Pipelines
+#### 5. cli53 - Command line tool for Amazon Route 53
+
+cli53 provides import and export from BIND format and simple command line management of Route 53 domains. Please visit https://github.com/barnybug/cli53 for more information.
+
+### Usage in GitLab CI/CD Pipelines
 
 Add something like the following to your `.gitlab-ci.yml`:
 
-#### 5.1 Deploy to Docker Compose
+#### Deploy to Docker Compose
 
 ```
   before_script:
@@ -50,7 +59,7 @@ The Docker compose file cannot be named `docker-compose.yml`because the filename
 
 Specify your S3 bucket without 's3://'.
 
-#### 5.2 Deploy to Docker Swarm
+#### Deploy to Docker Swarm
 
 ```
   before_script:
@@ -61,7 +70,7 @@ Specify your S3 bucket without 's3://'.
 
 Specify your S3 bucket without 's3://'.
 
-#### 5.3 Deploy to Kubernetes (K8s)
+#### Deploy to Kubernetes (K8s)
 
 ```
   before_script:
