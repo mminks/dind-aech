@@ -75,6 +75,7 @@ Specify your S3 bucket without 's3://'.
 ```
   before_script:
     - aws s3 cp s3://path-to-your-k8s/config ~/.kube
+    - export NAMESPACE=live
   script:
     - deploy_to_kubernetes.sh k8s
 ```
