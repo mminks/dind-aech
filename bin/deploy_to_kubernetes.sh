@@ -7,6 +7,7 @@ DEPLOYMENT_NAME=${2}
 NAMESPACE=${NAMESPACE:-default}
 
 echo "Starting deployment..."
+
 cat ${MANIFEST} | envsubst | kubectl apply -f -
 
 if [ -n "${DEPLOYMENT_NAME}" ]; then
