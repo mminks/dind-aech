@@ -107,6 +107,9 @@ RUN set -exo pipefail \
          https://storage.googleapis.com/kubernetes-release/release/$(wget --quiet --output-document=- https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
     && chmod +x /usr/local/bin/kubectl \
     && mkdir -p ~/.kube \
+    # install aws-env
+    && wget https://github.com/Droplr/aws-env/raw/master/bin/aws-env-linux-amd64 -O /usr/local/bin/aws-env \
+    && chmod +x /usr/local/bin/aws-env \
     # cleanup
     && rm -rf /tmp/awscli-bundle* \
     && rm -rf /var/cache/apk/* \
@@ -114,4 +117,5 @@ RUN set -exo pipefail \
     && echo "awscli: $(aws --version)" \
     && echo "terraform: $(terraform version)" \
     && echo "kubectl: $(kubectl version --client=true --short=true)" \
-    && echo "cli53: $(cli53 -v)"
+    && echo "cli53: $(cli53 -v)" \
+    && echo "aws-env: $(aws-env)"

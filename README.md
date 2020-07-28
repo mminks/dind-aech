@@ -5,6 +5,7 @@
 * AWS CLI (Command Line Interface)
 * kubectl - The Kubernetes command-line tool
 * cli53 - Command line tool for Amazon Route 53
+* aws-env - Secure way to handle environment variables in Docker
 
 ### Docker-in-Docker
 
@@ -41,6 +42,10 @@ The Kubernetes command-line tool, kubectl, allows you to run commands against Ku
 #### 5. cli53 - Command line tool for Amazon Route 53
 
 cli53 provides import and export from BIND format and simple command line management of Route 53 domains. Please visit https://github.com/barnybug/cli53 for more information.
+
+#### 6. aws-env - Secure way to handle environment variables in Docker
+
+aws-env is a small utility that tries to solve problem of passing environment variables to applications in a secure way, especially in a Docker containers. It uses AWS Parameter Store to securely store applications' configuration -- ideal for storing all kind of secrets. Please visit https://github.com/Droplr/aws-env for more information.
 
 ### Usage in GitLab CI/CD Pipelines
 
