@@ -15,13 +15,17 @@ BASE_NAME=$(basename ${COMPOSE_FILE})
 PROJECT_NAME=${BASE_NAME%.*}
 
 if [ "${PROJECT_NAME}" = "docker-compose" ]; then
-    echo "${COMPOSE_FILE}
-    " >&2
+    echo "${COMPOSE_FILE}" >&2
     exit 1
 fi
 
 USER="$(echo ${TARGET} | cut -d@ -f1)"
 HOST="$(echo ${TARGET} | cut -d@ -f2)"
+
+if [[ ${HOST} =~ ^[0-9].* ]]; then
+    echo "Deploy server needs to be a named host (no ip address). I will convert it for you." >&2
+    exit 1
+fi
 
 if [ -z "${USER}" ] || [ -z "${HOST}" ] || [ "${USER}" = "${HOST}" ]; then
     echo "Deploy server needs to be user@host" >&2
