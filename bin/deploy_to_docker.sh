@@ -30,7 +30,7 @@ fi
 
 # ${HOST} might be dns load balanced. To make sure we always get the same machine
 # we resolve the ip once and use the ip from now on
-IP="$(dig ${HOST} A +short | head --lines=1)"
+IP="$(dig ${HOST} A +short | head -n 1)"
 
 # Create directory on target machine
 DEPLOY_FILE="deployments/$(basename ${COMPOSE_FILE})"
