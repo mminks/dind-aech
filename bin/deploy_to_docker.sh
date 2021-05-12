@@ -22,7 +22,7 @@ fi
 USER="$(echo ${TARGET} | cut -d@ -f1)"
 HOST="$(echo ${TARGET} | cut -d@ -f2)"
 
-if [[ ${HOST} =~ ^[0-9].* ]]; then
+if echo ${HOST} | grep "^[0-9].*"; then
     echo "Deploy server needs to be a named host (no ip address). I will convert it for you." >&2
     exit 1
 fi
@@ -45,13 +45,12 @@ cat "${COMPOSE_FILE}" | envsubst | ssh "${USER}@${IP}" "cat > ${DEPLOY_FILE}"
 
 # Start the deployment
 ssh "${USER}@${IP}" /bin/bash <<EOF
-
     set -eo pipefail
 
     # get secrets from SSM if we are suppose to
     [[ -n "${ENV_PATH}" ]] && eval \$(AWS_REGION=${AWS_DEFAULT_REGION} AWS_ENV_PATH=${ENV_PATH} /usr/local/bin/aws-env)
 
-    # deploy the stack
+    # pull & deploy the project
+    docker-compose --file ${DEPLOY_FILE} --project-name ${PROJECT_NAME} pull
     docker-compose --file ${DEPLOY_FILE} --project-name ${PROJECT_NAME} up --detach --no-color
-
 EOF
