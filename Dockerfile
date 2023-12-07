@@ -24,6 +24,7 @@ RUN set -exo pipefail \
                         | grep linux \
                         | grep amd64 \
                         | tr -d '"' \
+                        | tr -d ',' \
                         | sort -V \
                         | tail -n1) \
     && wget --output-document=/tmp/terraform.zip ${TERRAFORM_URL} \
@@ -38,10 +39,10 @@ ENV GO15VENDOREXPERIMENT 1
 RUN apk add --no-cache \
       git \
       go \
-      make;\
-    go get github.com/barnybug/cli53; \
-    cd $GOPATH/src/github.com/barnybug/cli53; \
-    make install;
+      make\
+    && go get github.com/barnybug/cli53 \
+    && cd $GOPATH/src/github.com/barnybug/cli53 \
+    && make install
 
 FROM docker:stable-dind
 
